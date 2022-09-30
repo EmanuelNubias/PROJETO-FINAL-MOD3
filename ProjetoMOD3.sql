@@ -1,0 +1,103 @@
+CREATE DATABASE IF NOT EXISTS RESILIA;
+
+USE RESILIA;
+
+CREATE TABLE RESILIA.ALUNOS (
+    matricula INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+    nome VARCHAR(64) NOT NULL,
+    cpf VARCHAR(255) NOT NULL,
+    dataNasc DATE NOT NULL,
+    telefone NUMERIC(64) NOT NULL,
+    endereco VARCHAR(64) NOT NULL
+);
+CREATE TABLE RESILIA.DEPARTAMENTOS (
+    idDepartamento INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+    nome VARCHAR(65) NOT NULL,
+    contato INT(65) NOT NULL
+);
+CREATE TABLE RESILIA.FACILITADORES (
+    idFacilitador INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+    nome VARCHAR(64) NOT NULL,
+    cpf VARCHAR(255) NOT NULL,
+    dataNasc DATE NOT NULL,
+    telefone NUMERIC(64) NOT NULL,
+    endereco VARCHAR(64) NOT NULL,
+    salario NUMERIC(64) NOT NULL,
+    idDepartamento INT NOT NULL,
+    CONSTRAINT fk_idDepart FOREIGN KEY (idDepartamento)
+        REFERENCES RESILIA.DEPARTAMENTOS (idDepartamento)
+);
+CREATE TABLE RESILIA.CURSO (
+    idCurso INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+    nome VARCHAR(64) NOT NULL,
+    turno VARCHAR(64) NOT NULL,
+    qtdModulos INT NOT NULL
+);
+CREATE TABLE RESILIA.MODULOS (
+    codModulo INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+    nome VARCHAR(64) NOT NULL,
+    dataInicio DATE
+);
+CREATE TABLE RESILIA.ALUNOMODULO (
+    codModulo INT NOT NULL,
+    matricula INT NOT NULL,
+    CONSTRAINT fk_CodMod FOREIGN KEY (codModulo)
+        REFERENCES RESILIA.MODULOS (codModulo),
+    CONSTRAINT fk_matricAlun FOREIGN KEY (matricula)
+        REFERENCES RESILIA.ALUNOS (matricula)
+);
+CREATE TABLE RESILIA.ALUNOCURSO (
+    matricula INT NOT NULL,
+    idCurso INT NOT NULL,
+    CONSTRAINT fk_Matric FOREIGN KEY (matricula)
+        REFERENCES RESILIA.ALUNOS (matricula),
+    CONSTRAINT fk_idCurso FOREIGN KEY (idCurso)
+        REFERENCES RESILIA.CURSO (idCurso)
+);
+CREATE TABLE RESILIA.FACILITADORCURSO (
+    idFacilitador INT NOT NULL,
+    idCurso INT NOT NULL,
+    CONSTRAINT fk_idFacilit FOREIGN KEY (idFacilitador)
+        REFERENCES RESILIA.FACILITADORES (idFacilitador),
+    CONSTRAINT fk_CursoId FOREIGN KEY (idCurso)
+        REFERENCES RESILIA.CURSO (idCurso)
+);
+CREATE TABLE RESILIA.ALUNONOTA (
+    nota NUMERIC(64) NOT NULL,
+	codModulo INT NOT NULL,
+    CONSTRAINT fk_modAvaliacao FOREIGN KEY (codModulo)
+        REFERENCES RESILIA.MODULOS (codModulo),
+    matricula INT NOT NULL,
+    CONSTRAINT fk_modNotaAlun FOREIGN KEY (codModulo)
+        REFERENCES RESILIA.MODULOS (codModulo),
+    CONSTRAINT fk_MatricNota FOREIGN KEY (matricula)
+        REFERENCES RESILIA.ALUNOS (matricula)
+);
+CREATE TABLE RESILIA.PAGAMENTOS (
+    Data_Venc DATE,
+    Data_Pag DATE,
+    statusMatric VARCHAR(65) NOT NULL,
+    matricula INT NOT NULL,
+    CONSTRAINT fk_MatricPag FOREIGN KEY (matricula)
+        REFERENCES RESILIA.ALUNOS (matricula)
+);
+CREATE TABLE RESILIA.PRESENCA (
+    data_Aula DATE,
+    presenca BOOLEAN,
+    matricula INT NOT NULL,
+    CONSTRAINT fk_MatricPresenca FOREIGN KEY (matricula)
+        REFERENCES RESILIA.ALUNOS (matricula)
+);
+CREATE TABLE RESILIA.AVALIAÇÃOFACILITADOR (
+    avaliacao NUMERIC(10) NOT NULL,
+    idFacilitador INT NOT NULL,
+    codModulo INT NOT NULL,
+    matricula INT NOT NULL,
+    CONSTRAINT fk_modFacilit FOREIGN KEY (codModulo)
+        REFERENCES RESILIA.MODULOS (codModulo),
+    CONSTRAINT fk_avaliacaoFacilit FOREIGN KEY (idFacilitador)
+        REFERENCES RESILIA.FACILITADORES (idFacilitador)
+)
+
+
+
